@@ -1,0 +1,5 @@
+SELECT MIN(class) AS CLASS
+FROM Courses
+GROUP BY CLASS
+HAVING COUNT(class) >= 5
+;
