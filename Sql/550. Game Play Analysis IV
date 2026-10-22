@@ -1,0 +1,22 @@
+-- Write your PostgreSQL query statement below
+WITH ranking as(
+
+SELECT  player_id, event_date, ROW_NUMBER() OVER(PARTITION BY player_id ORDER BY event_date) as rn
+FROM Activity
+GROUP BY player_id, event_date
+ORDER BY event_date
+
+)
+
+SELECT 
+ROUND(
+COUNT(a.player_id) FILTER(WHERE b.event_date - 1 = a.event_date)::NUMERIC / COUNT(a.player_id)
+,2)
+as fraction
+FROM (
+    SELECT * FROM ranking WHERE rn = 1
+) a
+LEFT JOIN (
+    SELECT * FROM ranking WHERE rn = 2
+) b
+ON a.player_id = b.player_id;
