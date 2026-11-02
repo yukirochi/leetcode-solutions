@@ -1,0 +1,15 @@
+-- Write your PostgreSQL query statement below
+
+
+SELECT DISTINCT current_row AS ConsecutiveNums
+FROM(
+    SELECT 
+        LAG(num, 1) OVER(ORDER BY id) as last_row,
+        num as current_row, 
+        LEAD(num, 1) OVER(ORDER BY id) as next_row
+    FROM logs
+)
+WHERE 
+    last_row = current_row
+    AND current_row = next_row;
+
