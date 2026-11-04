@@ -1,0 +1,17 @@
+-- Write your PostgreSQL query statement below
+
+WITH add AS(
+    SELECT a.person_id, person_name,turn,(
+    SELECT sum(weight) 
+    FROM Queue b 
+    WHERE b.turn <= a.turn ) as prev
+    FROM Queue a
+    ORDER BY a.turn
+)
+
+SELECT person_name
+FROM add
+WHERE prev <= 1000
+ORDER BY turn DESC
+LIMIT 1 
+
