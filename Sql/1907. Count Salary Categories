@@ -1,0 +1,39 @@
+-- Write your PostgreSQL query statement below
+
+WITH categories(category,account_count) AS(
+    VALUES
+    ('Low Salary',0),    
+    ('Average Salary',0),
+    ('High Salary',0)
+),
+
+grouped AS(
+        SELECT
+    category,count(account_id) as account_count
+            FROM(
+            SELECT 
+            *,
+            CASE
+                WHEN  income < 20000 THEN 'Low Salary'
+                WHEN  income BETWEEN 20000 AND 50000 THEN 'Average Salary'
+                ELSE 'High Salary'
+            END AS category
+        FROM Accounts
+        )
+        GROUP BY category
+),
+
+    union_all AS(
+        SELECT * FROM categories
+        UNION ALL 
+        SELECT * FROM grouped
+)
+
+SELECT category, SUM(account_count) as accounts_count
+FROM union_all
+GROUP BY category
+
+
+
+
+;
